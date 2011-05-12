@@ -1,4 +1,6 @@
-require "rack/streaming_proxy"
+require "bundler"
+Bundler.setup
+Bundler.require
 
 module Rack
   class CorsPrefetch
