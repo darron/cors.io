@@ -1,0 +1,79 @@
+require "rack/streaming_proxy"
+
+module Rack
+  class CorsPrefetch
+    CORS_HEADERS = {
+      'Access-Control-Allow-Origin'   => '*',
+      'Access-Control-Allow-Methods'  => 'POST, GET, PUT, DELETE',
+      'Access-Control-Max-Age'        => '86400', # 24 hours
+      # 'Access-Control-Allow-Headers'  => 'X-Requested-With, X-HTTP-Method-Override, Content-Type, Accept, Authorization'
+      'Access-Control-Allow-Headers'  => 'Accept, Accept-Charset, Accept-Encoding, Accept-Language, Authorization, Content-Length, Content-Type, Host, Origin, Proxy-Connection, Referer, User-Agent'
+    }
+    FORCED_SSL_MSG = "CORS requests only allowed via https://"
+
+    def initialize(app)
+      @app = app
+      # @force_ssl = true
+    end
+
+    def call(env)
+      force_ssl(env) || process_preflight(env) || process_cors(env) || process_failed(env)
+    end
+
+    private
+      def force_ssl(env)
+        return if !@force_ssl || ssl_request?(env)
+        log("NonSSL", env)
+        [403, {'Content-Type' => 'text/plain'}, [FORCED_SSL_MSG]]
+      end
+
+      def process_preflight(env)
+        return unless env['HTTP_ORIGIN'] && env['HTTP_ACCESS_CONTROL_REQUEST_METHOD'] && env['REQUEST_METHOD'] == 'OPTIONS'
+        log("Preflight", env)
+        [204, CORS_HEADERS, []]
+      end
+
+      def process_cors(env)
+        log("Cors", env)
+        status, headers, body = @app.call(env)
+        
+        [status, headers.merge(CORS_HEADERS), body]
+      end
+
+      def process_failed(env)
+        log("Failed", env)
+        [404, {'Content-Type' => 'text/plain'}, []]
+      end
+
+      # Fixed in rack >= 1.3
+      def ssl_request?(env)
+        if env['HTTPS'] == 'on'
+          'https'
+        elsif env['HTTP_X_FORWARDED_PROTO']
+          env['HTTP_X_FORWARDED_PROTO'].split(',')[0]
+        else
+          env['rack.url_scheme']
+        end == 'https'
+      end
+
+      def log(kind, env)
+        logger = @logger || env['rack.errors']
+        logger.write(
+          "#{kind} request #{env['REQUEST_PATH']} \n" +
+          "origin: #{env['HTTP_ORIGIN']} \n" +
+          "referer: #{env['HTTP_REFERER']} \n" +
+          "authorization: #{env["HTTP_AUTHORIZATION"]} \n" +
+          "method: #{env['REQUEST_METHOD']} \n\n"
+        )
+      end
+  end
+end
+
+use Rack::CorsPrefetch
+use Rack::StreamingProxy do |request|
+  # inside the request block, return the full URI to redirect the request to,
+  # or nil/false if the request should continue on down the middleware stack.
+  
+  "https://rightsignature.com#{request.path}"
+end
+run proc{|env| [200, {"Content-Type" => "text/plain"}, ""] }
