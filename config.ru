@@ -37,6 +37,12 @@ module Rack
         log("Cors", env)
         status, headers, body = @app.call(env)
         
+        env['rack.errors'].write "status: #{status}\n"
+        headers.each do |key, val|
+          env['rack.errors'].write "#{key}: #{val}\n"
+        end
+        env['rack.errors'].write "\n#{body.inspect}\n\n"
+        
         [status, headers.merge(CORS_HEADERS), body]
       end
 
