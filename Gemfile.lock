@@ -1,6 +1,7 @@
 GIT
   remote: git://github.com/gr2m/rack-streaming-proxy.git
-  revision: 82c3d1daa4313d430a57f3a1a18ad51cf772a23c
+  revision: 0d577e717cd0044035ecc1386c51aa12d7177286
+  ref: 0d577e717cd0044035ec
   specs:
     rack-streaming-proxy (1.0.3)
       rack (>= 1.0)
