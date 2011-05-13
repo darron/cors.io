@@ -84,6 +84,8 @@ use Rack::StreamingProxy do |request|
   
   protocol, host, path = request.url.scan(/^(https?):\/\/[^\/]+\/([^\/]+)(.*)/).flatten
   
+  protocol = 'https' if host == 'staging.rightsignaturedev.com'
+
   puts "redirecting to #{protocol}://#{host}#{path}"
   
   "#{protocol}://#{host}#{path}"
