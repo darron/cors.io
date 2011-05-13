@@ -82,6 +82,10 @@ use Rack::StreamingProxy do |request|
   # inside the request block, return the full URI to redirect the request to,
   # or nil/false if the request should continue on down the middleware stack.
   
-  "https://rightsignature.com#{request.path}"
+  protocol, host, path = request.url.scan(/^(https?):\/\/[^\/]+\/([^\/]+)(.*)/).flatten
+  
+  puts "redirecting to #{protocol}://#{host}#{path}"
+  
+  "#{protocol}://#{host}#{path}"
 end
 run proc{|env| [200, {"Content-Type" => "text/plain"}, ""] }
