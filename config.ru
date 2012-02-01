@@ -4,13 +4,16 @@ Bundler.require
 
 module Rack
   class CorsPrefetch
-    CORS_HEADERS = {
-      'Access-Control-Allow-Origin'   => '*',
-      'Access-Control-Allow-Methods'  => 'POST, GET, PUT, DELETE',
-      'Access-Control-Max-Age'        => '86400', # 24 hours
-      # 'Access-Control-Allow-Headers'  => 'X-Requested-With, X-HTTP-Method-Override, Content-Type, Accept, Authorization'
-      'Access-Control-Allow-Headers'  => 'Accept, Accept-Charset, Accept-Encoding, Accept-Language, Authorization, Content-Length, Content-Type, Host, Origin, Proxy-Connection, Referer, User-Agent'
-    }
+    def cors_headers
+      {
+        'Access-Control-Allow-Origin'       => 'http://powerprint.prodanet.local:9294',
+        'Access-Control-Allow-Methods'      => 'POST, GET, PUT, DELETE',
+        'Access-Control-Max-Age'            => '86400', # 24 hours
+        # 'Access-Control-Allow-Headers'    => 'X-Requested-With, X-HTTP-Method-Override, Content-Type, Accept, Authorization'
+        'Access-Control-Allow-Headers'      => 'Accept, Accept-Charset, Accept-Encoding, Accept-Language, Authorization, Content-Length, Content-Type, Host, Origin, Proxy-Connection, Referer, User-Agent',
+        'Access-Control-Allow-Credentials'  => 'true'
+      }
+    end
     FORCED_SSL_MSG = "CORS requests only allowed via https://"
 
     def initialize(app)
@@ -32,7 +35,7 @@ module Rack
       def process_preflight(env)
         return unless env['HTTP_ORIGIN'] && env['HTTP_ACCESS_CONTROL_REQUEST_METHOD'] && env['REQUEST_METHOD'] == 'OPTIONS'
         log("Preflight", env)
-        [204, CORS_HEADERS, []]
+        [204, cors_headers, []]
       end
 
       def process_cors(env)
@@ -45,7 +48,7 @@ module Rack
         end
         env['rack.errors'].write "\n#{body.inspect}\n\n"
         
-        [status, headers.merge(CORS_HEADERS), body]
+        [status, headers.merge(cors_headers), body]
       end
 
       def process_failed(env)
@@ -83,8 +86,6 @@ use Rack::StreamingProxy do |request|
   # or nil/false if the request should continue on down the middleware stack.
   
   protocol, host, path = request.url.scan(/^(https?):\/\/[^\/]+\/([^\/]+)(.*)/).flatten
-  
-  protocol = 'https' if host == 'staging.rightsignaturedev.com'
 
   puts "redirecting to #{protocol}://#{host}#{path}"
   
