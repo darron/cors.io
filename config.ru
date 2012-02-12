@@ -6,8 +6,9 @@ module Rack
   class CorsPrefetch
     def cors_headers
       {
-        'Access-Control-Allow-Origin'       => 'http://powerprint.prodanet.local:9294',
+        # 'Access-Control-Allow-Origin'       => 'http://powerprint.prodanet.local:9294',
         # 'Access-Control-Allow-Origin'       => 'http://localhost:8880',
+        'Access-Control-Allow-Origin'       => 'http://powerprint.heroku.com',
         'Access-Control-Allow-Methods'      => 'POST, GET, PUT, DELETE',
         'Access-Control-Max-Age'            => '86400', # 24 hours
         'Access-Control-Allow-Headers'      => 'Accept, Accept-Charset, Accept-Encoding, Accept-Language, Authorization, Content-Length, Content-Type, Host, Origin, Proxy-Connection, Referer, User-Agent, X-Requested-With',
