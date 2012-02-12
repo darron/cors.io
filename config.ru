@@ -4,11 +4,13 @@ Bundler.require
 
 module Rack
   class CorsPrefetch
-    def cors_headers
+    def cors_headers(env)
+      host, path = env['HTTP_REFERER'].scan(/^(https?:\/\/[^\/]+)(.*)/).flatten      
+      
+      puts "referer: #{host}"
+      
       {
-        # 'Access-Control-Allow-Origin'       => 'http://powerprint.prodanet.local:9294',
-        # 'Access-Control-Allow-Origin'       => 'http://localhost:8880',
-        'Access-Control-Allow-Origin'       => 'http://powerprint.heroku.com',
+        'Access-Control-Allow-Origin'       => host,
         'Access-Control-Allow-Methods'      => 'POST, GET, PUT, DELETE',
         'Access-Control-Max-Age'            => '86400', # 24 hours
         'Access-Control-Allow-Headers'      => 'Accept, Accept-Charset, Accept-Encoding, Accept-Language, Authorization, Content-Length, Content-Type, Host, Origin, Proxy-Connection, Referer, User-Agent, X-Requested-With',
@@ -36,7 +38,7 @@ module Rack
       def process_preflight(env)
         return unless env['HTTP_ORIGIN'] && env['HTTP_ACCESS_CONTROL_REQUEST_METHOD'] && env['REQUEST_METHOD'] == 'OPTIONS'
         log("Preflight", env)
-        [204, cors_headers, []]
+        [204, cors_headers(env), []]
       end
 
       def process_cors(env)
@@ -49,7 +51,7 @@ module Rack
         end
         env['rack.errors'].write "\n#{body.inspect}\n\n"
         
-        [status, headers.merge(cors_headers), body]
+        [status, headers.merge(cors_headers(env)), body]
       end
 
       def process_failed(env)
