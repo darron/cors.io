@@ -1,7 +1,6 @@
 GIT
   remote: git://github.com/gr2m/rack-streaming-proxy.git
-  revision: 0d577e717cd0044035ecc1386c51aa12d7177286
-  ref: 0d577e717cd0044035ec
+  revision: 45a8bb385dee345a6014a61f2a7c96b6f922f84d
   specs:
     rack-streaming-proxy (1.0.3)
       rack (>= 1.0)
@@ -10,7 +9,7 @@ GIT
 GEM
   remote: http://rubygems.org/
   specs:
-    rack (1.2.2)
+    rack (1.4.1)
     servolux (0.8.1)
 
 PLATFORMS
