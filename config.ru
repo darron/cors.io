@@ -21,7 +21,8 @@ module Rack
       
       headers['Access-Control-Allow-Origin'] = host
       
-      log 'headers', headers
+      puts 'headers'
+      puts headers.inspect
       
       headers
     end
