@@ -20,6 +20,9 @@ module Rack
       end
       
       headers['Access-Control-Allow-Origin'] = host
+      
+      log 'headers', headers
+      
       headers
     end
     FORCED_SSL_MSG = "CORS requests only allowed via https://"
