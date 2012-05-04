@@ -6,22 +6,21 @@ module Rack
   class CorsPrefetch
     def cors_headers(env)
 
+      headers = {
+        'Access-Control-Allow-Methods'      => 'POST, GET, PUT, PATCH, DELETE',
+        'Access-Control-Max-Age'            => '86400', # 24 hours
+        'Access-Control-Allow-Headers'      => 'Accept, Accept-Charset, Accept-Encoding, Accept-Language, Authorization, Content-Length, Content-Type, Host, Origin, Proxy-Connection, Referer, User-Agent, X-Requested-With'
+      }
+      
       if env['HTTP_REFERER']
         host, path = env['HTTP_REFERER'].scan(/^(https?:\/\/[^\/]+)(.*)/).flatten      
+        headers['Access-Control-Allow-Credentials'] = 'true'
       else
         host = '*'
       end
       
-      
-      puts "referer: #{host}"
-      
-      {
-        'Access-Control-Allow-Origin'       => host,
-        'Access-Control-Allow-Methods'      => 'POST, GET, PUT, DELETE',
-        'Access-Control-Max-Age'            => '86400', # 24 hours
-        'Access-Control-Allow-Headers'      => 'Accept, Accept-Charset, Accept-Encoding, Accept-Language, Authorization, Content-Length, Content-Type, Host, Origin, Proxy-Connection, Referer, User-Agent, X-Requested-With',
-        'Access-Control-Allow-Credentials'  => 'true'
-      }
+      headers['Access-Control-Allow-Origin'] = host
+      headers
     end
     FORCED_SSL_MSG = "CORS requests only allowed via https://"
 
