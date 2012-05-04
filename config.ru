@@ -5,6 +5,7 @@ Bundler.require
 module Rack
   class CorsPrefetch
     def cors_headers(env)
+
       host, path = env['HTTP_REFERER'].scan(/^(https?:\/\/[^\/]+)(.*)/).flatten      
       
       puts "referer: #{host}"
