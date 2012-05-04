@@ -12,7 +12,7 @@ module Rack
         'Access-Control-Allow-Headers'      => 'Accept, Accept-Charset, Accept-Encoding, Accept-Language, Authorization, Content-Length, Content-Type, Host, Origin, Proxy-Connection, Referer, User-Agent, X-Requested-With'
       }
       
-      if env['HTTP_REFERER']
+      if ssl_request?(env)
         host, path = env['HTTP_REFERER'].scan(/^(https?:\/\/[^\/]+)(.*)/).flatten      
         headers['Access-Control-Allow-Credentials'] = 'true'
       else
