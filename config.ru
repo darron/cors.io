@@ -6,7 +6,12 @@ module Rack
   class CorsPrefetch
     def cors_headers(env)
 
-      host, path = env['HTTP_REFERER'].scan(/^(https?:\/\/[^\/]+)(.*)/).flatten      
+      if env['HTTP_REFERER']
+        host, path = env['HTTP_REFERER'].scan(/^(https?:\/\/[^\/]+)(.*)/).flatten      
+      else
+        host = '*'
+      end
+      
       
       puts "referer: #{host}"
       
