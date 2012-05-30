@@ -7,18 +7,28 @@ module Rack
     def cors_headers(env)
       
       host    = env['HTTP_ORIGIN']
-      headers = env['Access-Control-Request-Headers']
+      if env['Access-Control-Request-Headers']
+        headers = env['Access-Control-Request-Headers']
+      else
+        headers = env.keys.select{ |k| k =~ /^HTTP_/ }.map { |k| k.downcase.gsub /_/, '-' }.join ', '
+      end
       
-      puts 'host'
-      puts host
+
+      
+      
+      puts 'env'
+      puts env.inspect
       
       headers = {
         'Access-Control-Allow-Methods'      => 'POST, GET, PUT, PATCH, DELETE',
         'Access-Control-Max-Age'            => '86400', # 24 hours
         'Access-Control-Allow-Headers'      => headers,
+        # 'Access-Control-Allow-Headers'      => 'Accept, Accept-Charset, Accept-Encoding, Accept-Language, Authorization, Content-Length, Content-Type, Host, Origin, Proxy-Connection, Referer, User-Agent, X-Requested-With, X-Redmine-API-Key',
         'Access-Control-Allow-Credentials'  => 'true',
         'Access-Control-Allow-Origin'       => host
       }
+      
+      puts headers.inspect
       
       headers
     end
