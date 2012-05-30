@@ -10,7 +10,7 @@ module Rack
       if env['Access-Control-Request-Headers']
         headers = env['Access-Control-Request-Headers']
       else
-        headers = env.keys.select{ |k| k =~ /^HTTP_/ }.map { |k| k.downcase.gsub /_/, '-' }.join ', '
+        headers = env.keys.select{ |k| k =~ /^HTTP_/ }.map { |k| k.downcase.gsub(/_/, '-').gsub(/^http-/, '') }.join ', '
       end
       
 
