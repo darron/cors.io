@@ -12,11 +12,8 @@ module Rack
       else
         default_headers = 'Accept, Accept-Charset, Accept-Encoding, Accept-Language, Authorization, Content-Length, Content-Type, Host, Origin, Proxy-Connection, Referer, User-Agent, X-Requested-With, X-Redmine-API-Key'
         custom_headers = env.keys.select{ |k| k =~ /^HTTP_X_/ }.map { |k| k.downcase.gsub(/_/, '-').gsub(/^http-/, '') }.join ', '
-        headers = [default_headers, custom_headers].join ', '
+        headers = [default_headers, custom_headers].compact.join ', '
       end
-      
-
-      
       
       puts 'env'
       puts env.inspect
