@@ -6,8 +6,11 @@ module Rack
   class CorsPrefetch
     def cors_headers(env)
       
-      host    = env['Origin']
+      host    = env['HTTP_ORIGIN']
       headers = env['Access-Control-Request-Headers']
+      
+      puts 'host'
+      puts host
       
       headers = {
         'Access-Control-Allow-Methods'      => 'POST, GET, PUT, PATCH, DELETE',
