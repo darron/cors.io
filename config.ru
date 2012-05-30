@@ -12,7 +12,7 @@ module Rack
       headers = {
         'Access-Control-Allow-Methods'      => 'POST, GET, PUT, PATCH, DELETE',
         'Access-Control-Max-Age'            => '86400', # 24 hours
-        'Access-Control-Allow-Headers'      => 'Accept, Accept-Charset, Accept-Encoding, Accept-Language, Authorization, Content-Length, Content-Type, Host, Origin, Proxy-Connection, Referer, User-Agent, X-Requested-With',
+        'Access-Control-Allow-Headers'      => 'Accept, Accept-Charset, Accept-Encoding, Accept-Language, Authorization, Content-Length, Content-Type, Host, Origin, Proxy-Connection, Referer, User-Agent, X-Requested-With, X-Redmine-API-Key',
         'Access-Control-Allow-Credentials'  => 'true',
         'Access-Control-Allow-Origin'       => host
       }
